@@ -19,6 +19,15 @@ func getConfig() (*viper.Viper, error) {
 	return c, err
 }
 
+func getStamp() (*viper.Viper, error) {
+	s := viper.New()
+	s.SetConfigName("stamp")
+	s.SetConfigType("yml")
+	s.AddConfigPath("$HOME/.config/slack-mastodon")
+	err := s.ReadInConfig()
+	return s, err
+}
+
 func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line cyclomatic
 	flags := cmd.Flags()
 
@@ -37,6 +46,11 @@ func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line 
 		return err
 	}
 
+	s, err := getStamp()
+	if err != nil {
+		return err
+	}
+
 	slackClient := slack.New(c.GetString("slack.bot_token"))
 	slackChannel := c.GetString("slack.channel")
 
@@ -45,7 +59,7 @@ func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line 
 		AccessToken: c.GetString("mastodon.access_token"),
 	})
 
-	lastPostedID := c.GetString("last_status_id")
+	lastPostedID := s.GetString("last_status_id")
 	if verbose {
 		fmt.Printf("last_status_id: %s\n", lastPostedID)
 	}
@@ -78,8 +92,8 @@ func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line 
 			if err != nil {
 				return err
 			}
-			c.Set("last_status_id", post.ID)
-			c.WriteConfig()
+			s.Set("last_status_id", post.ID)
+			s.WriteConfig()
 		}
 	}
 	return nil
