@@ -22,7 +22,7 @@ func getConfig() (*viper.Viper, error) {
 func updateRunner(cmd *cobra.Command, _ []string) error {
 	flags := cmd.Flags()
 
-	noop, err = flags.GetBool("noop")
+	noop, err := flags.GetBool("noop")
 	if err != nil {
 		return err
 	}

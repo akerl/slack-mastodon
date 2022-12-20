@@ -23,10 +23,10 @@ Example `~/.config/slack-mastodon/config.yml`:
 
 ```yaml
 slack:
-  bot_token: TOKEN
-  channel: '#spam'
+  bot_token: xoxb-BLAH
+  channel: C04GDJLJASD
 mastodon:
-  server: https://tootymctootface.social
+  server: https://mastodon.social
   access_token: TOKEN
 ```
 
