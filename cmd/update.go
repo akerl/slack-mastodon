@@ -19,7 +19,7 @@ func getConfig() (*viper.Viper, error) {
 	return c, err
 }
 
-func updateRunner(cmd *cobra.Command, _ []string) error {
+func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line cyclomatic
 	flags := cmd.Flags()
 
 	noop, err := flags.GetBool("noop")
@@ -59,13 +59,20 @@ func updateRunner(cmd *cobra.Command, _ []string) error {
 	}
 
 	for _, post := range timeline {
+		text := post.URL
+		if text == "" {
+			if post.Reblog == nil {
+				return fmt.Errorf("empty content found: %s", post.ID)
+			}
+			text = fmt.Sprintf("%s (boosted by %s)", post.Reblog.URL, post.Account.Username)
+		}
 		if verbose {
 			fmt.Println(post.URL)
 		}
 		if !noop {
 			_, _, err := slackClient.PostMessage(
 				slackChannel,
-				slack.MsgOptionText(post.URL, false),
+				slack.MsgOptionText(text, false),
 				slack.MsgOptionEnableLinkUnfurl(),
 			)
 			if err != nil {
