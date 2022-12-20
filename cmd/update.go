@@ -27,7 +27,7 @@ func updateRunner(cmd *cobra.Command, _ []string) error {
 		return err
 	}
 
-	verbose, err = flags.GetBool("verbose")
+	verbose, err := flags.GetBool("verbose")
 	if err != nil {
 		return err
 	}
@@ -63,19 +63,18 @@ func updateRunner(cmd *cobra.Command, _ []string) error {
 			fmt.Println(post.URL)
 		}
 		if !noop {
-			slackClient.PostMessage(
+			_, _, err := slackClient.PostMessage(
 				slackChannel,
-				slack.MsgOptionText(post.URL),
+				slack.MsgOptionText(post.URL, false),
 				slack.MsgOptionEnableLinkUnfurl(),
 			)
-			c.Set("last_status_id", timeline[i].ID)
+			if err != nil {
+				return err
+			}
+			c.Set("last_status_id", post.ID)
 			c.WriteConfig()
 		}
 	}
-
-	// update recorded last_status_id
-	config.WriteConfig()
-
 	return nil
 }
 
