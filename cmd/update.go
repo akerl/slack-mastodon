@@ -67,7 +67,7 @@ func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line 
 			text = fmt.Sprintf("%s (boosted by %s)", post.Reblog.URL, post.Account.Username)
 		}
 		if verbose {
-			fmt.Println(post.URL)
+			fmt.Println(text)
 		}
 		if !noop {
 			_, _, err := slackClient.PostMessage(
