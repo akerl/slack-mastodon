@@ -73,7 +73,8 @@ func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line 
 		return err
 	}
 
-	for _, post := range timeline {
+	for i := len(timeline) - 1; i >= 0; i-- {
+		post := timeline[i]
 		text := post.URL
 		if text == "" {
 			if post.Reblog == nil {
