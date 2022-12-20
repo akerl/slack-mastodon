@@ -24,6 +24,7 @@ func getStamp() (*viper.Viper, error) {
 	s.SetConfigName("stamp")
 	s.SetConfigType("yml")
 	s.AddConfigPath("$HOME/.config/slack-mastodon")
+	s.SafeWriteConfig()
 	err := s.ReadInConfig()
 	return s, err
 }
@@ -93,7 +94,11 @@ func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line 
 				return err
 			}
 			s.Set("last_status_id", post.ID)
-			s.WriteConfig()
+
+			err = s.WriteConfig()
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
