@@ -1,0 +1,2 @@
+PACKAGE = slack-mastodon
+VERSION_VAR_PATH = version.Version
