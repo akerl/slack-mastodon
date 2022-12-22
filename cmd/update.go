@@ -75,11 +75,13 @@ func updateRunner(cmd *cobra.Command, _ []string) error { //revive:disable-line 
 
 	for i := len(timeline) - 1; i >= 0; i-- {
 		post := timeline[i]
-		text := post.URL
-		if text == "" {
-			if post.Reblog == nil {
+		var text string
+		if post.Reblog == nil {
+			text = post.URL
+			if text == "" {
 				return fmt.Errorf("empty content found: %s", post.ID)
 			}
+		} else {
 			text = fmt.Sprintf("%s (boosted by %s)", post.Reblog.URL, post.Account.Username)
 		}
 		if verbose {
